@@ -13,7 +13,9 @@
             <div :class="{on: loginWay}">
               <section class="login_message">
                 <input type="tel" maxlength="11" placeholder="手机号" v-model="phone">
-                <button :disabled="!isRightPhone" class="get_verification" :class="{right_phone_number: isRightPhone}" @click.prevent="sendCode">获取验证码</button>
+                <button :disabled="!isRightPhone || computeTime>0" class="get_verification" :class="{right_phone_number: isRightPhone}" @click.prevent="sendCode">
+                  {{computeTime>0 ? `已发送验证码（${computeTime}）s` : '发送验证码'}}
+                </button>
               </section>
               <section class="login_verification">
                 <input type="tel" maxlength="8" placeholder="验证码">
@@ -29,10 +31,12 @@
                   <input type="tel" maxlength="11" placeholder="手机/邮箱/用户名">
                 </section>
                 <section class="login_verification">
-                  <input type="tel" maxlength="8" placeholder="密码">
-                  <div class="switch_button off">
-                    <div class="switch_circle"></div>
-                    <span class="switch_text">...</span>
+                  <input :type="isShowPwd ? 'text' : 'password'" maxlength="8" placeholder="密码">
+                  <div class="switch_button" :class="isShowPwd ? 'on' : 'off'" @click="isShowPwd=!isShowPwd">
+                    <div class="switch_circle" :class="{right: isShowPwd}"></div>
+                    <span class="switch_text">
+                      {{isShowPwd ? 'abc' : ''}}
+                    </span>
                   </div>
                 </section>
                 <section class="login_message">
@@ -53,11 +57,14 @@
 </template>
 
 <script type="text/ecmascript-6">
+// import { clearInterval } from 'timers';
   export default {
     data() {
       return {
         loginWay: true,    //true:短信登录   false:密码登录
-        phone: ''
+        phone: '',
+        computeTime: 0,    //计时器
+        isShowPwd: false   //是否显示密码，默认不显示
       }
     },
     computed: {
@@ -66,9 +73,17 @@
       },
     },
     methods: {
-       sendCode() {
-        alert('发送验证码成功')
+      sendCode() {
+        this.computeTime = 10
+        const intervalId = setInterval(()=>{
+          this.computeTime--
+          if(this.computeTime === 0){
+            clearInterval(intervalId)
+          }
+        },1000);
+
       }
+
     }
 
   }
@@ -165,7 +180,6 @@
                   &.on
                     background #02a774
                   >.switch_circle
-                    //transform translateX(27px)
                     position absolute
                     top -1px
                     left -1px
@@ -176,6 +190,8 @@
                     background #fff
                     box-shadow 0 2px 4px 0 rgba(0,0,0,.1)
                     transition transform .3s
+                    &.right
+                      transform translateX(27px)
               .login_hint
                 margin-top 12px
                 color #999
