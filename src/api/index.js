@@ -31,6 +31,16 @@ export const reqShops = ({latitude, longitude}) => ajax({
     }
 })
 
+//4. 发送短信验证码
+export const reqSendcode = (phone) => ajax({
+    method: 'GET',
+    url: BASE + '/sendcode',
+    params: {
+        phone
+    }
+}) 
+
+
 //测试
 // reqAddress('116.36867', '40.10038').then((result)=>{
 //     console.log('result', result)
