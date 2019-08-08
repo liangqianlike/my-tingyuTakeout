@@ -36,10 +36,10 @@
   import {mapState} from 'vuex'
   import Shops from '../../components/Shops/Shops.vue'
   export default {
-    async mounted() {
+    mounted() {
       this.$store.dispatch('getShops')
-      await this.$store.dispatch('getCategorys')
-      // setTimeout(() => {
+      this.$store.dispatch('getCategorys')
+      setTimeout(() => {
         /* 
         创建swiper对象的时机?   必须在列表页面显示之后
         */
@@ -50,7 +50,7 @@
             el: '.swiper-pagination',
           },
         }) 
-      // }, 1000);
+      }, 1000);
     },
     computed: {
      
